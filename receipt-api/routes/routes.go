@@ -3,13 +3,15 @@ package routes
 import (
 	"net/http"
 	"receipt-api/handlers"
+	"receipt-api/middleware"
 
 	"github.com/gorilla/mux"
 )
 
-func SetupRouter() *mux.Router {
+func RegisterRoutes() *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/receipts/process", handlers.ProcessReceiptHandler).Methods(http.MethodPost)
-	r.HandleFunc("/receipts/{id}/points", handlers.GetPointsHandler).Methods(http.MethodGet)
+	r.Handle("/receipts/process", middleware.ValidateReceiptMiddleware(http.HandlerFunc(handlers.ProcessReceiptHandler))).Methods("POST")
+	r.HandleFunc("/receipts/{id}/points", handlers.GetPointsHandler).Methods("GET")
+
 	return r
 }

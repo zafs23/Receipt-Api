@@ -19,6 +19,7 @@ var (
 
 // handles "/receipts/process" POST endpoint
 func ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
+	//fmt.Println("ProcessReceiptHandler called") // debugging text
 	var curr_receipt models.Receipt
 	if err := json.NewDecoder(r.Body).Decode(&curr_receipt); err != nil {
 		// handle the error and send 400 code
@@ -28,12 +29,12 @@ func ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
 
 	// generate the ID
 	curr_id := services.GenerateReceiptID()
-	curr_receipt_points, err := services.CalculatePoints(curr_receipt)
-	if err != nil {
-		// Handle the error returned from CalculatePoints
-		http.Error(w, fmt.Sprintf("Error calculating points: %v", err), http.StatusInternalServerError)
-		return
-	}
+	curr_receipt_points := services.CalculatePoints(curr_receipt)
+	// if err != nil {
+	// 	// Handle the error returned from CalculatePoints
+	// 	http.Error(w, fmt.Sprintf("Error calculating points: %v", err), http.StatusInternalServerError)
+	// 	return
+	// }
 
 	// lock the current receipt while updating the value so no other go routine can access it
 	mutex.Lock()
@@ -44,8 +45,11 @@ func ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
 
 	response := models.IDResponse{ID: curr_id}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
-
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		fmt.Println("Error encoding response:", err)
+	}
+	//json.NewEncoder(w).Encode(response)
 }
 
 // handle "/receipts/{id}/points" GET endpoint
@@ -64,6 +68,10 @@ func GetPointsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	response := models.PointsResponse{Points: curr_points}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		fmt.Println("Error encoding response:", err)
+	}
+	//json.NewEncoder(w).Encode(response)
 
 }
