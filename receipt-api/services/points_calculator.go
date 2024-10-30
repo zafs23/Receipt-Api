@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func CalculatePoints(receipt models.Receipt) int {
+func CalculatePoints(receipt models.Receipt) (int, error) {
 	points := 0
 
 	//1 point for every alphanumeric character in the retailer name
@@ -19,9 +19,6 @@ func CalculatePoints(receipt models.Receipt) int {
 	}
 	// the total is validated, no need to capture err here
 	total_float_value, _ := strconv.ParseFloat(receipt.Total, 64)
-	// if float_err != nil {
-	// 	return 0, errors.LogAndReturnError(fmt.Sprintf("error parsing total '%s' to float64", receipt.Total), float_err)
-	// }
 
 	//50 points if the total is a round dollar amount with no cents
 	if math.Trunc(total_float_value) == total_float_value {
@@ -48,20 +45,12 @@ func CalculatePoints(receipt models.Receipt) int {
 			// item price is validated, no need to capture parsing error
 			// parse the price of the item
 			price, _ := strconv.ParseFloat(item.Price, 64)
-			// if price_err != nil {
-			// 	//return 0, fmt.Errorf("error parsing price '%s' for item '%s': %w", item.Price, item.ShortDescription, err)
-			// 	return 0, errors.LogAndReturnError(fmt.Sprintf("error extracting price from purchase item '%s'", item.ShortDescription), price_err)
-			// }
 			points += int(math.Ceil(price * 0.2))
 		}
 	}
 
 	//6 points if the day in the purchase date is odd
 	day := utils.GetDay(receipt.PurchaseDate)
-	// if date_err != nil {
-	// 	//return 0, fmt.Errorf("error extracting day from purchase date '%s': %w", receipt.PurchaseDate, date_err)
-	// 	return 0, errors.LogAndReturnError(fmt.Sprintf("error extracting day from purchase date '%s'", receipt.PurchaseDate), date_err)
-	// }
 
 	if day%2 != 0 {
 		points += 6
@@ -69,14 +58,10 @@ func CalculatePoints(receipt models.Receipt) int {
 
 	//10 points if the time of purchase is after 2:00pm and before 4:00pm
 	isInTimeRange := utils.IsBetween2ToBefore4PM(receipt.PurchaseTime)
-	// if time_err != nil {
-	// 	//return 0, fmt.Errorf("error extracting time from purchase time '%s': %w", receipt.PurchaseDate, time_err)
-	// 	return 0, errors.LogAndReturnError(fmt.Sprintf("error extracting time from purchase time '%s'", receipt.PurchaseTime), time_err)
-	// }
 
 	if isInTimeRange {
 		points += 10
 	}
 
-	return points
+	return points, nil
 }

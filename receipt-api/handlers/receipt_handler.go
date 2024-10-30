@@ -2,76 +2,61 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"receipt-api/middleware"
 	"receipt-api/models"
 	"receipt-api/services"
-	"sync"
+	"receipt-api/storage"
 
 	"github.com/gorilla/mux"
 )
 
-var (
-	receiptsMap = make(map[string]models.Receipt)
-	pointsMap   = make(map[string]int)
-	mutex       = sync.Mutex{}
-)
+var shardedStorage = storage.NewShardedStorage()
 
 // handles "/receipts/process" POST endpoint
 func ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
-	//fmt.Println("ProcessReceiptHandler called") // debugging text
-	var curr_receipt models.Receipt
-	if err := json.NewDecoder(r.Body).Decode(&curr_receipt); err != nil {
-		// handle the error and send 400 code
-		http.Error(w, "Invalid json request", http.StatusBadRequest)
+	// Retrieve the validated receipt from the request context
+	tempReceipt, ok := r.Context().Value(middleware.ReceiptContextKey).(models.Receipt)
+	if !ok {
+		http.Error(w, "Invalid receipt data in context", http.StatusInternalServerError)
 		return
 	}
 
-	// generate the ID
-	curr_id := services.GenerateReceiptID()
-	curr_receipt_points := services.CalculatePoints(curr_receipt)
+	// Generate receipt ID and calculate points
+	currID := services.GenerateReceiptID()
+	currPoints, _ := services.CalculatePoints(tempReceipt)
 	// if err != nil {
-	// 	// Handle the error returned from CalculatePoints
-	// 	http.Error(w, fmt.Sprintf("Error calculating points: %v", err), http.StatusInternalServerError)
+	// 	http.Error(w, "Error calculating points", http.StatusInternalServerError)
 	// 	return
 	// }
 
-	// lock the current receipt while updating the value so no other go routine can access it
-	mutex.Lock()
-	receiptsMap[curr_id] = curr_receipt
-	pointsMap[curr_id] = curr_receipt_points
-	mutex.Unlock()
-	// unlock
+	// Store receipt and points in sharded storage
+	shardedStorage.StoreReceipt(currID, tempReceipt, currPoints)
 
-	response := models.IDResponse{ID: curr_id}
+	// Send response with the generated receipt ID
+	response := models.IDResponse{ID: currID}
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-		fmt.Println("Error encoding response:", err)
-	}
-	//json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(response)
 }
 
 // handle "/receipts/{id}/points" GET endpoint
 func GetPointsHandler(w http.ResponseWriter, r *http.Request) {
-	curr_id := mux.Vars(r)["id"] // get the {id} from endpoint
+	// Extract the receipt ID from URL variables
+	id := mux.Vars(r)["id"]
 
-	// lock the current receipt while updating the value so no other go routine can access it
-	mutex.Lock()
-	curr_points, ok := pointsMap[curr_id]
-	mutex.Unlock()
-
-	if !ok {
-		// handle the error and send 404 code if the id doesn't exist
+	// Retrieve receipt and points from the sharded storage
+	_, points, found := shardedStorage.GetReceipt(id)
+	if !found {
 		http.Error(w, "Receipt not found", http.StatusNotFound)
 		return
 	}
-	response := models.PointsResponse{Points: curr_points}
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-		fmt.Println("Error encoding response:", err)
-	}
-	//json.NewEncoder(w).Encode(response)
 
+	// Send response with the points
+	response := models.PointsResponse{Points: points}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+	// if err := json.NewEncoder(w).Encode(response); err != nil {
+	// 	http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	// 	fmt.Println("Error encoding response:", err)
+	// }
 }
