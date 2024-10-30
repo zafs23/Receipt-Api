@@ -12,6 +12,7 @@ import (
 )
 
 var shardedStorage = storage.NewShardedStorage()
+var receiptCache = make(map[string]models.IDResponse)
 
 // handles "/receipts/process" POST endpoint
 func ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +24,14 @@ func ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Generate receipt ID and calculate points
-	currID := services.GenerateReceiptID()
+	currID := services.GenerateReceiptID(tempReceipt)
+	// Check if the ID already exists in the cache
+	if response, exists := receiptCache[currID]; exists {
+		// If ID exists, return the cached response
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 	currPoints, err := services.CalculatePoints(tempReceipt)
 	if err != nil {
 		http.Error(w, "Error calculating points", http.StatusInternalServerError)
