@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"math"
 	"time"
 )
@@ -11,12 +12,15 @@ func IsAlphanumeric(ch rune) bool {
 }
 
 // extract the day from a date string.
-func GetDay(date string) int {
+func GetDay(date string) (int, error) {
 	// date error was validated by the request validator
-	parsedDate, _ := time.Parse("2006-01-02", date)
+	parsedDate, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return 0, fmt.Errorf("invalid date format: %s, expected format is YYYY-MM-DD", date)
+	}
 
 	// Extract the day from the parsed date
-	return parsedDate.Day()
+	return parsedDate.Day(), nil
 
 }
 
@@ -29,8 +33,11 @@ func IsFloatMultiple(x, y, tolerance float64) bool {
 	return math.Abs(result-math.Round(result)) < tolerance
 }
 
-func IsBetween2ToBefore4PM(timeStr string) bool {
+func IsBetween2ToBefore4PM(timeStr string) (bool, error) {
 	// time has been validated before calling this function
-	t, _ := time.Parse("15:04", timeStr)
-	return t.Hour() >= 14 && t.Hour() < 16
+	t, err := time.Parse("15:04", timeStr)
+	if err != nil {
+		return false, fmt.Errorf("invalid time format '%s', expected 24-hour format, but found: %w", timeStr, err)
+	}
+	return t.Hour() >= 14 && t.Hour() < 16, nil
 }

@@ -24,11 +24,11 @@ func ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Generate receipt ID and calculate points
 	currID := services.GenerateReceiptID()
-	currPoints, _ := services.CalculatePoints(tempReceipt)
-	// if err != nil {
-	// 	http.Error(w, "Error calculating points", http.StatusInternalServerError)
-	// 	return
-	// }
+	currPoints, err := services.CalculatePoints(tempReceipt)
+	if err != nil {
+		http.Error(w, "Error calculating points", http.StatusInternalServerError)
+		return
+	}
 
 	// Store receipt and points in sharded storage
 	shardedStorage.StoreReceipt(currID, tempReceipt, currPoints)
