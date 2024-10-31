@@ -19,7 +19,7 @@ Then, run the server using:
 ```
 go run main.go
 ```
-The API will listen to http://localhost:8000 to handle GET and POST request.
+The API will listen to http://localhost:8080 to handle GET and POST request.
 
 ### Services
 #### POST request 
