@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"receipt-api/middleware"
-	"receipt-api/models"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/middleware"
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
+
 	"testing"
 )
 

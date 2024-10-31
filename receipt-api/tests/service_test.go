@@ -1,9 +1,10 @@
 package tests
 
 import (
-	"receipt-api/models"
-	"receipt-api/services"
 	"testing"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
+	"github.com/zafs23/Receipt-Api/receipt-api/services"
 )
 
 func TestCalculatePoints(t *testing.T) {

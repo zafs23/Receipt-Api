@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"receipt-api/models"
-	"receipt-api/validators"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
+	"github.com/zafs23/Receipt-Api/receipt-api/validators"
 )
 
 // define a custom type for context keys

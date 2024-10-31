@@ -4,7 +4,8 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"receipt-api/models"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
 )
 
 func GenerateReceiptID(receipt models.Receipt) string {

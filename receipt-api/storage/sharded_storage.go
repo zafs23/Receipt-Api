@@ -2,7 +2,8 @@ package storage
 
 import (
 	"hash/fnv"
-	"receipt-api/models"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
 )
 
 // define number of shards

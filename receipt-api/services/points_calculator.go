@@ -3,11 +3,13 @@ package services
 import (
 	"fmt"
 	"math"
-	"receipt-api/errors"
-	"receipt-api/models"
-	"receipt-api/utils"
+
 	"strconv"
 	"strings"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/errors"
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
+	"github.com/zafs23/Receipt-Api/receipt-api/utils"
 )
 
 func CalculatePoints(receipt models.Receipt) (int, error) {

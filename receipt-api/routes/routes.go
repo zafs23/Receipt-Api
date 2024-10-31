@@ -2,10 +2,10 @@ package routes
 
 import (
 	"net/http"
-	"receipt-api/handlers"
-	"receipt-api/middleware"
 
 	"github.com/gorilla/mux"
+	"github.com/zafs23/Receipt-Api/receipt-api/handlers"
+	"github.com/zafs23/Receipt-Api/receipt-api/middleware"
 )
 
 func RegisterRoutes(receiptHandler *handlers.ReceiptHandler) *mux.Router {

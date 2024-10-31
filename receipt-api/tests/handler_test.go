@@ -6,11 +6,13 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"receipt-api/handlers"
-	"receipt-api/middleware"
-	"receipt-api/models"
-	"receipt-api/storage"
+
 	"testing"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/handlers"
+	"github.com/zafs23/Receipt-Api/receipt-api/middleware"
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
+	"github.com/zafs23/Receipt-Api/receipt-api/storage"
 
 	"github.com/gorilla/mux"
 )

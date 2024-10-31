@@ -3,11 +3,12 @@ package validators
 import (
 	"errors"
 	"fmt"
-	"receipt-api/models"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
 )
 
 // validate receipt fields

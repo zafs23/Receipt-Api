@@ -1,9 +1,10 @@
 package tests
 
 import (
-	"receipt-api/models"
-	"receipt-api/storage"
 	"testing"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
+	"github.com/zafs23/Receipt-Api/receipt-api/storage"
 )
 
 func TestStoreAndRetrieveReceipt(t *testing.T) {

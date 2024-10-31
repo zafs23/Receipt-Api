@@ -1,8 +1,9 @@
 package storage
 
 import (
-	"receipt-api/models"
 	"sync"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
 )
 
 type Shard struct {

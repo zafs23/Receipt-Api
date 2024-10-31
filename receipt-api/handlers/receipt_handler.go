@@ -3,10 +3,11 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"receipt-api/middleware"
-	"receipt-api/models"
-	"receipt-api/services"
-	"receipt-api/storage"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/middleware"
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
+	"github.com/zafs23/Receipt-Api/receipt-api/services"
+	"github.com/zafs23/Receipt-Api/receipt-api/storage"
 
 	"github.com/gorilla/mux"
 )

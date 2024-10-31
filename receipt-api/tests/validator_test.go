@@ -1,10 +1,11 @@
 package tests
 
 import (
-	"receipt-api/models"
-	"receipt-api/validators"
 	"strings"
 	"testing"
+
+	"github.com/zafs23/Receipt-Api/receipt-api/models"
+	"github.com/zafs23/Receipt-Api/receipt-api/validators"
 )
 
 func TestValidateReceipt_Valid_Receipt(t *testing.T) {
