@@ -89,18 +89,18 @@ These rules collectively define how many points should be awarded to a receipt.
 - 5 points for every two items on the receipt.
 - If the trimmed length of the item description is a multiple of 3, multiply the price by 0.2 and round up to the nearest integer. The result is the number of points earned.
 - 6 points if the day in the purchase date is odd.
-- 10 points if the time of purchase is after 2:00pm and before 4:00pm.
+- 10 points if the time of purchase is after 2:00 pm and before 4:00 pm.
 
-### Assumptions and Design scope
+### Assumptions and Design Scope
 Assumptions in the design
-- Each short description assumped to be 1-50 character long
-- When determining total is multiple of 0.25, the tolerance is assumed to be 0..00001
+- Each short description assumed to be 1-50 characters long
+- When determining the total is multiple of 0.25, the tolerance is assumed to be 0..00001
 - Expect at most two decimal places in the item price
 
-Addtional to the handler, a controller could be implemented for more complex business logic. But for this simple project, no controller logic is added.
+Additional to the handler, a controller could be implemented for more complex business logic. But for this simple project, no controller logic is added.
 
-##### Scalibility and Memory Usage
-To simulate scalibility in the in-memory storage system, data sharding is implemented with highest of 10 shards. To keep the memory usage limited, the generated `ID` is unique for identical payloads. 
+##### Scalability and Memory Usage
+To simulate scalability in the in-memory storage system, data sharding is implemented with the highest of 10 shards. To keep the memory usage limited, the generated `ID` is unique for identical payloads and stored in a cache. 
 
 
 ### Testing
