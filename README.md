@@ -1,4 +1,4 @@
-## Receipt-Api ![workflow](https://github.com/zafs23/Go-Server/actions/workflows/go.yml/badge.svg)
+## Receipt-Api ![workflow](https://github.com/zafs23/Receipt-Api/actions/workflows/go.yml/badge.svg)
 This project handles GET and POST requests. For POST request this project takes a JSON receipt and returns a JSON object with an ID. For the GET request, with provided ID of a receipt returns a JSON response with points earned. 
 
 ### Getting Started
