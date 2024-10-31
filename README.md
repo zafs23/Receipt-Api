@@ -97,6 +97,8 @@ Assumptions in the design
 - When determining total is multiple of 0.25, the tolerance is assumed to be 0..00001
 - Expect at most two decimal places in the item price
 
+Addtional to the handler, a controller could be implemented for more complex business logic. But for this simple project, no controller logic is added.
+
 ##### Scalibility and Memory Usage
 To simulate scalibility in the in-memory storage system, data sharding is implemented with highest of 10 shards. To keep the memory usage limited, the generated `ID` is unique for identical payloads. 
 
