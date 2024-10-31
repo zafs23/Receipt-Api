@@ -11,11 +11,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var shardedStorage = storage.NewShardedStorage()
-var receiptCache = make(map[string]models.IDResponse)
+type ReceiptHandler struct {
+	ShardedStorage *storage.ShardedStorage
+	ReceiptCache   map[string]models.IDResponse
+}
+
+// var shardedStorage = storage.NewShardedStorage()
+// var receiptCache = make(map[string]models.IDResponse)
 
 // handles "/receipts/process" POST endpoint
-func ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
+func (h *ReceiptHandler) ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
 	// Retrieve the validated receipt from the request context
 	tempReceipt, ok := r.Context().Value(middleware.ReceiptContextKey).(models.Receipt)
 	if !ok {
@@ -26,7 +31,7 @@ func ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
 	// Generate receipt ID and calculate points
 	currID := services.GenerateReceiptID(tempReceipt)
 	// Check if the ID already exists in the cache
-	if response, exists := receiptCache[currID]; exists {
+	if response, exists := h.ReceiptCache[currID]; exists {
 		// If ID exists, return the cached response
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -39,21 +44,22 @@ func ProcessReceiptHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Store receipt and points in sharded storage
-	shardedStorage.StoreReceipt(currID, tempReceipt, currPoints)
+	h.ShardedStorage.StoreReceipt(currID, tempReceipt, currPoints)
 
 	// Send response with the generated receipt ID
 	response := models.IDResponse{ID: currID}
+	h.ReceiptCache[currID] = response
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 
 // handle "/receipts/{id}/points" GET endpoint
-func GetPointsHandler(w http.ResponseWriter, r *http.Request) {
+func (h *ReceiptHandler) GetPointsHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract the receipt ID from URL variables
 	id := mux.Vars(r)["id"]
 
 	// Retrieve receipt and points from the sharded storage
-	_, points, found := shardedStorage.GetReceipt(id)
+	_, points, found := h.ShardedStorage.GetReceipt(id)
 	if !found {
 		http.Error(w, "Receipt not found", http.StatusNotFound)
 		return
