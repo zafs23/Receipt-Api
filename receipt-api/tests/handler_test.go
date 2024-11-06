@@ -31,10 +31,8 @@ func TestProcessReceiptHandler(t *testing.T) {
 		Retailer:     "Test Retailer",
 		PurchaseDate: "2022-01-01",
 		PurchaseTime: "13:01",
-		Items: []models.Item{
-			{ShortDescription: "Test Item", Price: "10.00"},
-		},
-		Total: "10.00",
+		Items:        []models.Item{{ShortDescription: "Test Item", Price: "10.00"}},
+		Total:        "10.00",
 	}
 
 	// Convert the receipt to JSON
@@ -106,7 +104,7 @@ func TestGetPointsHandler(t *testing.T) {
 
 	// Check if the response contains the correct points
 	var response models.PointsResponse
-	json.NewDecoder(rr.Body).Decode(&response)
+	json.NewDecoder(rr.Body).Decode(&response) // decode the rr to the response
 	if response.Points != 100 {
 		t.Errorf("expected points 100, got %d", response.Points)
 	}

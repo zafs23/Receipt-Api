@@ -22,10 +22,10 @@ func TestValidateReceiptMiddleware(t *testing.T) {
 	}
 
 	reqBody, _ := json.Marshal(receipt)
-	req := httptest.NewRequest(http.MethodPost, "/receipts/process", bytes.NewBuffer(reqBody))
+	req := httptest.NewRequest(http.MethodPost, "/receipts/process", bytes.NewBuffer(reqBody)) // POST request for test
 	req.Header.Set("Content-Type", "application/json")
 
-	rr := httptest.NewRecorder()
+	rr := httptest.NewRecorder() // response recorder
 
 	// Dummy handler to simulate passing middleware
 	nextHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

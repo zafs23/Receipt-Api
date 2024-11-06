@@ -25,6 +25,7 @@ func TestStoreAndRetrieveReceipt(t *testing.T) {
 		t.Fatal("receipt not found in storage")
 	}
 
+	// check if all fields match
 	if points != 50 {
 		t.Errorf("expected 50 points, got %d", points)
 	}
@@ -32,4 +33,25 @@ func TestStoreAndRetrieveReceipt(t *testing.T) {
 	if retrievedReceipt.Retailer != receipt.Retailer {
 		t.Errorf("expected retailer %s, got %s", receipt.Retailer, retrievedReceipt.Retailer)
 	}
+
+	if retrievedReceipt.PurchaseDate != receipt.PurchaseDate {
+		t.Errorf("expected purchase date %s, got %s", receipt.PurchaseDate, retrievedReceipt.PurchaseDate)
+	}
+
+	if retrievedReceipt.PurchaseTime != receipt.PurchaseTime {
+		t.Errorf("expected purchase time %s, got %s", receipt.PurchaseTime, retrievedReceipt.PurchaseTime)
+	}
+
+	if len(retrievedReceipt.Items) != len(receipt.Items) {
+		t.Fatalf("expected %d items, got %d", len(receipt.Items), len(retrievedReceipt.Items))
+	}
+	for i, item := range retrievedReceipt.Items {
+		if item.ShortDescription != receipt.Items[i].ShortDescription {
+			t.Errorf("expected item description %s, got %s", receipt.Items[i].ShortDescription, item.ShortDescription)
+		}
+		if item.Price != receipt.Items[i].Price {
+			t.Errorf("expected item price %s, got %s", receipt.Items[i].Price, item.Price)
+		}
+	}
+
 }

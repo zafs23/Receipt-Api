@@ -35,11 +35,14 @@ func (h *ReceiptHandler) ProcessReceiptHandler(w http.ResponseWriter, r *http.Re
 	currID := services.GenerateReceiptID(tempReceipt)
 	// Check if the ID already exists in the cache
 	if response, exists := h.ReceiptCache[currID]; exists {
+		//fmt.Println(h.ReceiptCache)
 		// If ID exists, return the cached response
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
 		return
 	}
+
+	// if there was a cache miss, or cache unavailable
 	currPoints, err := services.CalculatePoints(tempReceipt)
 	if err != nil {
 		http.Error(w, "Error calculating points", http.StatusInternalServerError)
@@ -51,6 +54,7 @@ func (h *ReceiptHandler) ProcessReceiptHandler(w http.ResponseWriter, r *http.Re
 
 	// Send response with the generated receipt ID
 	response := models.IDResponse{ID: currID}
+	//response = models.IDResponse{ID: currID}
 	h.ReceiptCache[currID] = response
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
@@ -77,3 +81,11 @@ func (h *ReceiptHandler) GetPointsHandler(w http.ResponseWriter, r *http.Request
 	// 	fmt.Println("Error encoding response:", err)
 	// }
 }
+
+// func (h *ReceiptHandler) getFromCache(id string) (models.IDResponse, error) {
+// 	response, exists := h.ReceiptCache[id]
+// 	if !exists {
+// 		return models.IDResponse{}, errors.New("cache unavailable or miss")
+// 	}
+// 	return response, nil
+// }

@@ -85,7 +85,7 @@ func TestValidateReceipt_InvalidTotalFormat(t *testing.T) {
 	}
 }
 
-func TestValidateReceipt_ItemPriceFormat(t *testing.T) {
+func TestValidateReceipt_ItemInvalidPriceFormat(t *testing.T) {
 	receipt := models.Receipt{
 		Retailer:     "Test Retailer",
 		PurchaseDate: "2022-01-01",

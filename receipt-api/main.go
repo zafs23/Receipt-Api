@@ -22,7 +22,7 @@ func main() {
 		ReceiptCache:   receiptCache,
 	}
 
-	r := routes.RegisterRoutes(&receiptHandler)
+	r := routes.RegisterRoutes(&receiptHandler) // passing the address of receipt handler
 	fmt.Println("Server listening on local port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
