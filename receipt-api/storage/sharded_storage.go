@@ -23,7 +23,7 @@ func NewShardedStorage() *ShardedStorage {
 
 // Hash function to determine shard for a given ID
 func getShardIndex(id string) int {
-	hasher := fnv.New32a()                 // Fwoler-Noll-Vo 32-bit no cyrptographic hash
+	hasher := fnv.New32a()                 // Fwoler-Noll-Vo 32-bit non cyrptographic hash
 	hasher.Write([]byte(id))               // write the byte representation of the id
 	return int(hasher.Sum32()) % numShards // computes the 32-bit hash and then modulo
 }
@@ -39,8 +39,8 @@ func (s *ShardedStorage) StoreReceipt(id string, receipt models.Receipt, points 
 
 // GetReceipt retrieves a receipt and its points from the correct shard
 func (s *ShardedStorage) GetReceipt(id string) (models.Receipt, int, bool) {
-	shard := s.shards[getShardIndex(id)]
-	shard.mu.RLock() // read lock, multiple readers
+	shard := s.shards[getShardIndex(id)] // get the correct shard for the generated ID
+	shard.mu.RLock()                     // read lock, multiple readers
 	defer shard.mu.RUnlock()
 	receipt, receiptExists := shard.receipts[id]
 	points, pointsExists := shard.points[id]

@@ -29,6 +29,8 @@ func (h *ReceiptHandler) ProcessReceiptHandler(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	//fmt.Println(tempReceipt)
+
 	// Generate receipt ID and calculate points
 	currID := services.GenerateReceiptID(tempReceipt)
 	// Check if the ID already exists in the cache
