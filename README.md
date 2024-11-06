@@ -100,7 +100,7 @@ Assumptions in the design
 Additional to the handler, a controller could be implemented for more complex business logic. But for this simple project, no controller logic is added.
 
 ##### Scalability and Memory Usage
-To simulate scalability in the in-memory storage system, data sharding is implemented with the highest of 10 shards. To keep the memory usage limited, the generated `ID` is unique for identical payloads and stored in a cache. 
+To simulate scalability in the in-memory storage system, data sharding is implemented with the highest of 10 shards. To keep the memory usage limited, the generated `ID` is unique for identical payloads and stored in a cache for better performance. 
 
 
 ### Testing
